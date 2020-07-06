@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lists</title>
+</head>
+<body>
+<table align="center" border="1" cellpadding="1" cellspacing="1" style="color:blue; width:500px">
+    <tbody>
+    <tr>
+        <td colspan="2" style="text-align:center">Заметки</td>
+    </tr>
+    <tr>
+        <td colspan="2">Меню</td>
+    </tr>
+    <tr>
+        <td>Категории</td>
+        <td>Задачи</td>
+    </tr>
+    <tr>
+        <td><div th:each="list: ${lists}">
+            <!--<a th:href=@{/index} th:utext="${list.getName()}"></a>-->
+            <a th:href="@{/index/{id}(id=${list.getId()})}" th:utext="${list.getName()}"></a>
+        </div>
+            <a th:href="@{/addList}">New List</a>
+        </td>
+        <td>&nbsp;</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

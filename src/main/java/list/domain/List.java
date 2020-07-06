@@ -1,18 +1,21 @@
 package list.domain;
 
-//import javax.persistence.*;
+import javax.persistence.*;
 import java.util.Set;
 
-//@Entity
+@Entity
 public class List {
-//    @Id
-//    @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
 
     public List(){
     }
 
+    public List(String name){
+        this(null, name);
+    }
     public List(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -34,7 +37,7 @@ public class List {
         return name;
     }
 
-/*    @OneToMany(fetch = FetchType.EAGER, mappedBy = "list")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "list")
     private Set<Task> tasks;
 
     public Set<Task> getTask() {
@@ -43,6 +46,6 @@ public class List {
 
     public void setTask(Set<Task> tasks) {
         this.tasks = tasks;
-    }*/
+    }
 
 }
