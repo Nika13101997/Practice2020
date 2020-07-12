@@ -3,21 +3,34 @@ package list.domain;
 import javax.persistence.*;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import list.domain.ListEntity;
+
 @Entity
+@Table(name = "TASK")
 public class Task {
     @Id
-    @GeneratedValue
-    private Long id;
-    private Long parentId;
+    @Column(name = "UID", nullable = false, length = 10)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long uid;
+    //private Long parentId;
+    @Column(name = "TITLE", nullable = false)
     private String title;
+    @Column(name = "DESCRIPTION")
     private String description;
+    @Column(name = "DONE")
     private Boolean done;
+    @Column(name = "DATE")
     private Date date;
+
+    @ManyToOne(fetch = FetchType.LAZY)//, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "listEntityUid", nullable = false)
+    private ListEntity listEntity;
 
     public Task(){
     }
 
-    public Task(Long parentId, String title){
+    /*public Task(Long parentId, String title){
         this(null, parentId, title, null, false, null);
     }
     public Task(Long id, Long parentId, String title, String description, Boolean done, Date date) {
@@ -27,23 +40,23 @@ public class Task {
         this.description = description;
         this.done = done;
         this.date = date;
+    }*/
+
+    public void setUid(Long uid){
+        this.uid = uid;
     }
 
-    public void setId(Long id){
-        this.id = id;
+    public Long getUid(){
+        return uid;
     }
 
-    public long getId(){
-        return id;
-    }
+    //public void setParentId(Long parentId){
+    //    this.parentId = parentId;
+    //}
 
-    public void setParentId(Long parentId){
-        this.parentId = parentId;
-    }
-
-    public long getParentId(){
-        return parentId;
-    }
+    //public Long getParentId(){
+    //    return parentId;
+    //}
 
     public void setTitle(String title){
         this.title = title;
@@ -77,15 +90,28 @@ public class Task {
         return date;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "listId", nullable = false)
-    private List list;
 
-    public List getList() {
-        return list;
+    //public List getList() {
+    //    return list;
+    //}
+
+    //public void setList(List list) {
+    //    this.list = list;
+    //}
+
+    @JsonIgnore
+    public ListEntity getListEntity(){
+        return listEntity;
+    }
+    @JsonIgnore
+    public void setListEntity(ListEntity listEntity){
+        this.listEntity = listEntity;
     }
 
-    public void setList(List list) {
-        this.list = list;
+    public Long getListEntityId(){
+        return listEntity.getUid();
+    }
+    public String getListEntityName(){
+        return listEntity.getName();
     }
 }

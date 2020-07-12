@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Lists</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/stl.css" media="all" />
 </head>
 <body>
-<table align="center" border="1" cellpadding="1" cellspacing="1" style="color:blue; width:500px">
+<div id="container">
+    <div><h1>Заметки</h1></div>
+    <div id="piecemaker-container" class="one-fourth">
+            <h2>Категории</h2>
+            <div th:each="list: ${lists}">
+
+                <a th:href="@{/index/{uid}(uid=${list.getUid()})}" th:utext="${list.getName()}"></a>
+                <a th:if="${list.getUid()}" th:href="@{/deleteList/{uid}(uid=${list.getUid()})}" th:utext="Delete"></a>
+                   <!-- <form action="#" th:action="@{/deleteList/{uid} (uid=${list.getUid()})}">
+                        <button type="submit" value="Delete List"></button>
+                    </form>-->
+
+            </div>
+            <form action="#" th:object="${addList}" method="post" th:action="@{/addList}">
+                <input type="text" name="name" />
+                <input type="submit" value="Submit"/>
+            </form>
+            <!--<a th:href="@{/addList}">New List</a>-->
+    </div>
+    <div id="piecemaker-container" class="three-fourth">
+            <h2>Задачи</h2>
+            <h3 align="center" th:utext="${currentList.getName()}"></h3>
+            <div th:each="task: ${tasks}">
+                <input type="checkbox" value="true">
+                <a th:href="@{/index/{uid}(uid=${task.getUid()})}" th:utext="${task.getTitle()}"></a>
+                <a th:if="${task.getUid()}"th:href="@{/deleteTask/{uid}(uid=${task.getUid()})}">Delete</a>
+                    <!--<form action="#" th:action="@{/deleteTask/{uid} (uid=${task.getUid()})}">
+                        <button type="submit" value="Delete Task"></button>
+                    </form>-->
+
+            </div>
+            <form action="#" th:object="${addTask}" method="post" th:action="@{/addTask}">
+                <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
+                <input type="text" name="title" />
+                <input type="submit" value="Submit"/>
+            </form>
+            <!--<a th:href="@{/addTask}">New Task</a>-->
+    </div>
+
+</div>
+<!--<table align="center" border="1" cellpadding="1" cellspacing="1" style="color:blue; width:500px">
     <tbody>
     <tr>
         <td colspan="2" style="text-align:center">Заметки</td>
@@ -19,15 +60,19 @@
     </tr>
     <tr>
         <td><div th:each="list: ${lists}">
-            <!--<a th:href=@{/index} th:utext="${list.getName()}"></a>-->
+
             <a th:href="@{/index/{id}(id=${list.getId()})}" th:utext="${list.getName()}"></a>
         </div>
             <a th:href="@{/addList}">New List</a>
         </td>
-        <td>&nbsp;</td>
+        <td><div th:each="task: ${tasks}">
+            <a th:href="@{/index/{parentId}(parentId=${task.getParentId()})}" th:utext="${task.getTitle()}"></a>
+            </div>
+            <a th:href="@{/addTask}">New Task</a>
+        </td>
     </tr>
     </tbody>
-</table>
+</table>-->
 
 </body>
 </html>

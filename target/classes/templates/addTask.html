@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" >
+    <title>New Task</title>
+</head>
+<body>
+<h1>New Task</h1>
+<form action="#" th:action="@{/addTask}" th:object="${addTask}" method="post">
+    <p>Name: <input type="text" th:field="*{title}" /></p>
+    <p>ListId: <input th:field="*{parentId}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    <!--<div th:each="list: ${lists}">
+        <a> <input th:utext="${list.getName()}" th:field="*{list}" ></a>
+    </div>-->
+</form>
+</body>
+</html>
