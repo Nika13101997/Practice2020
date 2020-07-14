@@ -1,78 +1,113 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lists</title>
-    <link rel="stylesheet" type="text/css" href="/assets/css/stl.css" media="all" />
+    <title>Заметки</title>
+    <link rel="stylesheet" href="/assets/css/stl.css"/>
 </head>
-<body>
-<div id="container">
-    <div><h1>Заметки</h1></div>
-    <div id="piecemaker-container" class="one-fourth">
-            <h2>Категории</h2>
-            <div th:each="list: ${lists}">
-
-                <a th:href="@{/index/{uid}(uid=${list.getUid()})}" th:utext="${list.getName()}"></a>
-                <a th:if="${list.getUid()}" th:href="@{/deleteList/{uid}(uid=${list.getUid()})}" th:utext="Delete"></a>
-                   <!-- <form action="#" th:action="@{/deleteList/{uid} (uid=${list.getUid()})}">
-                        <button type="submit" value="Delete List"></button>
-                    </form>-->
-
+<body class="is-preload">
+<div id="wrapper">
+    <header id="header">
+        <h1><a th:href="index.html">Заметки</a></h1>
+        <nav class="links">
+            <ul>
+                <li><a>Меню</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="main">
+        <header>
+            <h2 align="center">ЗАДАЧИ</h2>
+            <h2 align="center" th:utext="${currentList.getName()}"></h2>
+            <div  class="dropdown">
+                <button th:if="${currentList.getUid()}">Изменить</button>
+                <div  class="dropdown-content">
+                    <a th:if="${currentList.getUid()}" th:href="@{/deleteList/{uid}(uid=${currentList.getUid()})}">Удалить</a>
+                    <a th:if="${currentList.getUid()}" class="js-show-form" >Переименовать</a>
+                </div>
             </div>
+            <form class="js-form hidden" action="#" th:object="${upList}" method="post" th:action="@{/updateList/{uid}(uid=${currentList.getUid()})}">
+                Новое имя
+                <input type="text" name="name" />
+                <input type="submit" value="Сохранить"/>
+            </form>
+        </header>
+        <form action="#" th:object="${addTask}" method="post" th:action="@{/addTask}">
+            Новая задача
+            <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
+            <input type="text" name="title" />
+            <input type="submit" value="Submit"/>
+        </form>
+
+        <!--<article>-->
+            <div class="post"  th:each="task: ${tasks}">
+                <header>
+                    <a th:href="@{/index/{uid}(uid=${task.getUid()})}" th:utext="${task.getTitle()}"></a>
+                    <p th:utext="${task.getDescription()}"></p>
+                    <div  class="dropdownT">
+                        <button>Изменить</button>
+                        <div  class="dropdown-content">
+                            <a th:href="@{/deleteTask/{uid}(uid=${task.getUid()})}">Удалить</a>
+                            <a class="js-show-formT">Редактировать</a>
+                        </div>
+                    </div>
+                    <form class="js-formT hidden" action="#" th:object="${upTask}" method="post" th:action="@{/updateTask/{uid}(uid=${currentList.getUid()})}">
+                        Новое имя
+                        <input type="text" name="title" />
+                        <input type="text" name="description" />
+                        <input type="date" name="date" />
+                        <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
+                        <input type="submit" value="Сохранить"/>
+                    </form>
+                </header>
+            </div>
+        <!-- </article>-->
+    </div>
+    <section id="sidebar">
+        <header>
+            <h2 align="center">КАТЕГОРИИ</h2>
+        </header>
+        <div class="mini-posts" th:each="list: ${lists}">
+            <a th:unless="${list.getUid()}" th:href="@{/index/all}" th:utext="${list.getName()}"></a>
+            <a th:if="${list.getUid()}" th:href="@{/index/{uid}(uid=${list.getUid()})}" th:utext="${list.getName()}"></a>
+            <a th:unless="${list.getUid()}" th:href="@{/deleteList/all}">Удалить все</a>
+        </div>
+        <article>
             <form action="#" th:object="${addList}" method="post" th:action="@{/addList}">
+                Новая категория
                 <input type="text" name="name" />
                 <input type="submit" value="Submit"/>
             </form>
-            <!--<a th:href="@{/addList}">New List</a>-->
-    </div>
-    <div id="piecemaker-container" class="three-fourth">
-            <h2>Задачи</h2>
-            <h3 align="center" th:utext="${currentList.getName()}"></h3>
-            <div th:each="task: ${tasks}">
-                <input type="checkbox" value="true">
-                <a th:href="@{/index/{uid}(uid=${task.getUid()})}" th:utext="${task.getTitle()}"></a>
-                <a th:if="${task.getUid()}"th:href="@{/deleteTask/{uid}(uid=${task.getUid()})}">Delete</a>
-                    <!--<form action="#" th:action="@{/deleteTask/{uid} (uid=${task.getUid()})}">
-                        <button type="submit" value="Delete Task"></button>
-                    </form>-->
-
-            </div>
-            <form action="#" th:object="${addTask}" method="post" th:action="@{/addTask}">
-                <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
-                <input type="text" name="title" />
-                <input type="submit" value="Submit"/>
-            </form>
-            <!--<a th:href="@{/addTask}">New Task</a>-->
-    </div>
-
+        </article>
+    </section>
 </div>
-<!--<table align="center" border="1" cellpadding="1" cellspacing="1" style="color:blue; width:500px">
-    <tbody>
-    <tr>
-        <td colspan="2" style="text-align:center">Заметки</td>
-    </tr>
-    <tr>
-        <td colspan="2">Меню</td>
-    </tr>
-    <tr>
-        <td>Категории</td>
-        <td>Задачи</td>
-    </tr>
-    <tr>
-        <td><div th:each="list: ${lists}">
 
-            <a th:href="@{/index/{id}(id=${list.getId()})}" th:utext="${list.getName()}"></a>
-        </div>
-            <a th:href="@{/addList}">New List</a>
-        </td>
-        <td><div th:each="task: ${tasks}">
-            <a th:href="@{/index/{parentId}(parentId=${task.getParentId()})}" th:utext="${task.getTitle()}"></a>
-            </div>
-            <a th:href="@{/addTask}">New Task</a>
-        </td>
-    </tr>
-    </tbody>
-</table>-->
+<script>(function main() {
+  document.addEventListener('DOMContentLoaded', DOMContentLoaded);
+
+  function DOMContentLoaded() {
+        var buttonNode = document.querySelector('.js-show-form');
+    buttonNode.addEventListener('click', showForm);
+  }
+
+  function showForm() {
+    var node = document.querySelector('.js-form');
+    node.classList.remove('hidden');
+  }
+})();</script>
+<script>(function main() {
+  document.addEventListener('DOMContentLoaded', DOMContentLoadedT);
+
+  function DOMContentLoadedT() {
+        var buttonNodeT = document.querySelector('.js-show-formT');
+    buttonNodeT.addEventListener('click', showFormT);
+  }
+
+  function showFormT() {
+    var nodeT = document.querySelector('.js-formT');
+    nodeT.classList.remove('hidden');
+  }
+})();</script>
 
 </body>
 </html>

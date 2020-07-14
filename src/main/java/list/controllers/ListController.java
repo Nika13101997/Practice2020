@@ -51,9 +51,21 @@ public class ListController {
         return "index";
     }
 
+    @RequestMapping(value = {"/index/all"}, method = RequestMethod.GET)
+    public String getIndexAll(Model model){
+        Map<Long, ListEntity> lists = getLists();
+        //Optional<List> list = listRepository.findById(id);
+        Iterable<Task> tasks = taskRepository.findAll();
+
+        model.addAttribute("lists", lists.values());
+        model.addAttribute("currentList", lists.get(0L));
+        model.addAttribute("tasks", tasks);
+        return "index";
+    }
+
     private  Map<Long, ListEntity> getLists(){
         Map<Long, ListEntity> result = new HashMap<>();
-        result.put(0L, new ListEntity(("")));
+        result.put(0L, new ListEntity(("Все задачи")));
         Iterable<ListEntity> lists = listRepository.findAll();
         for(ListEntity list: lists){
             result.put(list.getUid(), list);
@@ -70,32 +82,4 @@ public class ListController {
         return result;
     }
 
-    /*@RequestMapping(value={"/addList"}, method=RequestMethod.POST)
-    public String listSubmit(@ModelAttribute ListEntity addList, Model model) {
-        if(StringUtils.hasText(addList.getName())){
-            ListEntity result = listRepository.save(new ListEntity(addList.getName()));
-            Long uid = result.getUid();
-            return "redirect:/index/" + uid;
-        }
-        return "redirect:/";
-    }*/
-
-    /*@RequestMapping(value={"/addList"}, method=RequestMethod.GET)
-    public String listForm(Model model) {
-        model.addAttribute("addList", new List());
-        return "addList";
-    }
-
-    @RequestMapping(value={"/addList"}, method=RequestMethod.POST)
-    public String listSubmit(@ModelAttribute List addList) {
-        if(StringUtils.hasText(addList.getName())){
-            listRepository.save(new List(addList.getName()));
-            //Long id = result.getId();
-
-            //return "redirect:/index/" + id;
-        }
-
-
-        return "redirect:/index";
-    }*/
 }

@@ -27,31 +27,6 @@ public class AddListController {
     @Autowired
     private TaskRepository taskRepository;
 
-    /*@RequestMapping(value={"/addList"}, method=RequestMethod.GET)
-    public String listForm(Model model) {
-        model.addAttribute("addList", new ListEntity());
-        return "addList";
-    }
-
-    @RequestMapping(value={"/addList"}, method=RequestMethod.POST)
-    public String listSubmit(@ModelAttribute ListEntity addList, Model model) {
-        if(StringUtils.hasText(addList.getName())){
-            ListEntity result = listRepository.save(new ListEntity(addList.getName()));
-            Long id = result.getId();
-            return "redirect:/index/" + id;
-        }
-        return "redirect:/";
-    }*/
-
-    /*@RequestMapping(value={"/addTask"}, method=RequestMethod.GET)
-    public String taskForm(Model model) {
-       // Map<Long, ListEntity> lists = getLists();
-        //model.addAttribute("lists", lists.values());
-        //model.addAttribute("currentList", lists.get(null));
-
-        model.addAttribute("addTask", new Task());
-        return "addTask";
-    }*/
 
     @RequestMapping(value={"/addList"}, method=RequestMethod.POST)
     public String listSubmit(@ModelAttribute ListEntity addList, Model model) {
@@ -94,5 +69,18 @@ public class AddListController {
         ListEntity list = task.getListEntity();
         taskRepository.delete(task);
         return "redirect:/index/" + list.getUid();
+    }
+
+    @RequestMapping(value = {"/deleteList/all"}, method = RequestMethod.GET)
+    public String listDeleteAll(){
+        Iterable<ListEntity> lists = listRepository.findAll();
+        for(ListEntity list: lists){
+            List<Task> tasks = taskRepository.findByListEntity(list);
+            for(Task task: tasks){
+                taskRepository.delete(task);
+            }
+            listRepository.deleteById(list.getUid());
+        }
+        return "redirect:/";
     }
 }

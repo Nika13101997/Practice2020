@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 @Controller
 public class ChangeController {
     @Autowired
@@ -22,33 +24,30 @@ public class ChangeController {
     @Autowired
     private TaskRepository taskRepository;
 
-   /* @RequestMapping(value = {"/{pUid}/changeTask/{uid}"}, method = RequestMethod.GET)
-    public String chahgeForm(Model model, @PathVariable Long uid, @PathVariable Long pUid){
-        model.addAttribute("changeTask", new Task());
-        return "/{pUid}/changeTask/{uid}";
-    }
-
-    @RequestMapping(value = {"/{pUid}/changeTask/{uid}"}, method = RequestMethod.POST)
-    public String changeTask(@ModelAttribute Task chTask, @PathVariable Long uid, @PathVariable Long pUid, Model model){
-        Task myTask = taskRepository.findById(uid).get();
-        if(StringUtils.hasText(chTask.getTitle()))
-            myTask.setTitle(chTask.getTitle());
-        return "index";
-    }*/
-
-    /*@RequestMapping(value={"/addList"}, method=RequestMethod.GET)
-    public String listForm(Model model) {
-        model.addAttribute("addList", new ListEntity());
-        return "addList";
-    }
-
-    @RequestMapping(value={"/addList"}, method=RequestMethod.POST)
-    public String listSubmit(@ModelAttribute ListEntity addList, Model model) {
-        if(StringUtils.hasText(addList.getName())){
-            ListEntity result = listRepository.save(new ListEntity(addList.getName()));
-            Long id = result.getId();
-            return "redirect:/index/" + id;
+    @RequestMapping(value={"/updateList/{uid}"}, method = RequestMethod.POST)
+    public String updateList(@ModelAttribute ListEntity upList, @PathVariable Long uid){
+        if(StringUtils.hasText(upList.getName())){
+            ListEntity list = listRepository.findById(uid).get();
+            list.setName(upList.getName());
+            listRepository.save(list);
         }
-        return "redirect:/";
-    }*/
+        return "redirect:/index/" + uid;
+    }
+
+    @RequestMapping(value={"/updateTask/{uid}"}, method = RequestMethod.POST)
+    public String updateTask(@ModelAttribute TaskVO upTask, @PathVariable Long uid){
+        ListEntity list = listRepository.findById(upTask.getParentUid()).get();
+        Task task = taskRepository.findById(uid).get();
+        if(StringUtils.hasText(upTask.getTitle()))
+            task.setTitle(upTask.getTitle());
+        if (StringUtils.hasText(upTask.getDescription()))
+            task.setDescription(upTask.getDescription());
+        if (!StringUtils.isEmpty(upTask.getDate()))
+            task.setDate(upTask.getDate());
+        taskRepository.save(task);
+
+        return "redirect:/index/" + upTask.getParentUid();
+    }
+
+
 }

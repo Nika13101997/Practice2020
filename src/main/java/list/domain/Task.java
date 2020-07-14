@@ -16,7 +16,7 @@ public class Task {
     //private Long parentId;
     @Column(name = "TITLE", nullable = false)
     private String title;
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 100)
     private String description;
     @Column(name = "DONE")
     private Boolean done;
