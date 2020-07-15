@@ -41,16 +41,30 @@ public class ChangeController {
         Task task = taskRepository.findById(uid).get();
         if(StringUtils.hasText(addTask.getTitle()))
             task.setTitle(addTask.getTitle());
-        if(StringUtils.hasText(addTask.getDescription())) {
+        if(StringUtils.hasText(addTask.getDescription()) && (addTask.getDescription().length()<= 40)) {
             task.setDescription(addTask.getDescription());
         }
-        Date date = new Date();
-        date = addTask.getDate();
-        task.setDate(date);
-
+        if(addTask.getDone()){
+            task.setDone(true);
+        }else{
+            task.setDone(false);
+        }
         taskRepository.save(task);
 
         return "redirect:/index/" + addTask.getParentUid();
+    }
+
+    @RequestMapping(value="/doneTask/{uid}", method = RequestMethod.GET)
+    public String doneTask(@PathVariable Long uid, Model model){
+        Task task = taskRepository.findById(uid).get();
+        ListEntity list = task.getListEntity();
+        if(task.getDone()){
+            task.setDone(false);
+        }else{
+            task.setDone(true);
+        }
+        taskRepository.save(task);
+        return "redirect:/index/" + list.getUid();
     }
 
 

@@ -80,6 +80,7 @@ public class ListController {
         model.addAttribute("lists", lists.values());
         model.addAttribute("currentList", lists.get(0L));
         model.addAttribute("tasks", tasks);
+        model.addAttribute("currentTask", lists.get(0L));
         return "index";
     }
 

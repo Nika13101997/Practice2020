@@ -8,10 +8,10 @@
 <body class="is-preload">
 <div id="wrapper">
     <header id="header">
-        <h1><a th:href="index.html">Заметки</a></h1>
+        <h1><a th:href="@{/index}">Заметки</a></h1>
         <nav class="links">
             <ul>
-                <li><a>Меню</a></li>
+                <li><a th:href="@{/index}">Главная</a></li>
             </ul>
         </nav>
     </header>
@@ -36,7 +36,7 @@
             Новая задача
             <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
             <input type="text" name="title" />
-            <input type="submit" value="Submit"/>
+            <input type="submit" value="Добавить"/>
         </form>
         <form th:if="${currentTask.getUid()}" action="#" th:object="${addTask}" method="post" th:action="@{/updateTask/{uid}(uid=${currentTask.getUid()})}">
             Новое имя
@@ -44,6 +44,12 @@
             <input type="text" name="title" />
             Описание
             <input type="text" name="description" />
+            Задача не выполнена
+            <input type="radio" name="done" th:value="false">
+            Задача выполнена
+            <input type="radio" name="done" th:value="true">
+            <!--<input th:if="${currentTask.getDone()}"type="checkbox" checked name="done" th:value="false">
+            <input th:unless="${currentTask.getDone()}"type="checkbox" name="done" th:value="true">-->
            <!-- Выполнить до
             <input type="date" name="date"/>-->
             <input type="submit" value="Сохранить"/>
@@ -52,8 +58,13 @@
         <!--<article>-->
             <div class="post"  th:each="task: ${tasks}">
                 <header>
-                    <a th:href="@{/index/{uid}(uid=${task.getUid()})}" th:utext="${task.getTitle()}"></a>
-                    <p th:utext="${task.getDescription()}"></p>
+                    <a th:utext="${task.getTitle()}"></a><br>
+                    <h4><p th:utext="${task.getDescription()}"></p></h4>
+                    <h5><p th:if="${task.getDone()}" font-size="10px">Задача Выполнена!</p></h5>
+                    <h5><p th:unless="${task.getDone()}" font-size="10px">В процессе...</p></h5>
+                    <!--<a th:unless="${task.getDone()}" > NO OK</a>-->
+                        <!--<a th:if="${task.getDone()}" th:href="@{/doneTask/{uid}(uid=${task.getUid()})}" font-size="15px">Выполнено!</a>
+                        <a th:unless="${task.getDone()}" th:href="@{/doneTask/{uid}(uid=${task.getUid()})}" font-size="15px">Не выполнено</a>-->
                     <div  class="dropdownT">
                         <button>Изменить</button>
                         <div  class="dropdown-content">
@@ -72,13 +83,15 @@
         <div class="mini-posts" th:each="list: ${lists}">
             <a th:unless="${list.getUid()}" th:href="@{/index/all}" th:utext="${list.getName()}"></a>
             <a th:if="${list.getUid()}" th:href="@{/index/{uid}(uid=${list.getUid()})}" th:utext="${list.getName()}"></a>
-            <a th:unless="${list.getUid()}" th:href="@{/deleteList/all}">Удалить все</a>
+            <a th:unless="${list.getUid()}" th:href="@{/deleteList/all}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Удалить все</a>
         </div>
         <article>
             <form action="#" th:object="${addList}" method="post" th:action="@{/addList}">
                 Новая категория
                 <input type="text" name="name" />
-                <input type="submit" value="Submit"/>
+                <input type="submit" value="Добавить"/>
             </form>
         </article>
     </section>
@@ -95,19 +108,6 @@
   function showForm() {
     var node = document.querySelector('.js-form');
     node.classList.remove('hidden');
-  }
-})();</script>
-<script>(function main() {
-  document.addEventListener('DOMContentLoaded', DOMContentLoadedT);
-
-  function DOMContentLoadedT() {
-        var buttonNodeT = document.querySelector('.js-show-formT');
-    buttonNodeT.addEventListener('click', showFormT);
-  }
-
-  function showFormT() {
-    var nodeT = document.querySelector('.js-formT');
-    nodeT.classList.remove('hidden');
   }
 })();</script>
 
