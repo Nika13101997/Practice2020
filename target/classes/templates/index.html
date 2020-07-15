@@ -38,6 +38,16 @@
             <input type="text" name="title" />
             <input type="submit" value="Submit"/>
         </form>
+        <form th:if="${currentTask.getUid()}" action="#" th:object="${addTask}" method="post" th:action="@{/updateTask/{uid}(uid=${currentTask.getUid()})}">
+            Новое имя
+            <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
+            <input type="text" name="title" />
+            Описание
+            <input type="text" name="description" />
+           <!-- Выполнить до
+            <input type="date" name="date"/>-->
+            <input type="submit" value="Сохранить"/>
+        </form>
 
         <!--<article>-->
             <div class="post"  th:each="task: ${tasks}">
@@ -48,17 +58,9 @@
                         <button>Изменить</button>
                         <div  class="dropdown-content">
                             <a th:href="@{/deleteTask/{uid}(uid=${task.getUid()})}">Удалить</a>
-                            <a class="js-show-formT">Редактировать</a>
+                            <a th:href="@{/index/task/{uid}(uid=${task.getUid()})}">Редактировать</a>
                         </div>
                     </div>
-                    <form class="js-formT hidden" action="#" th:object="${upTask}" method="post" th:action="@{/updateTask/{uid}(uid=${currentList.getUid()})}">
-                        Новое имя
-                        <input type="text" name="title" />
-                        <input type="text" name="description" />
-                        <input type="date" name="date" />
-                        <input type="hidden" name="parentUid" th:value="${currentList.getUid()}"/>
-                        <input type="submit" value="Сохранить"/>
-                    </form>
                 </header>
             </div>
         <!-- </article>-->

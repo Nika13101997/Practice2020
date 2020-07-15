@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -34,20 +35,24 @@ public class ChangeController {
         return "redirect:/index/" + uid;
     }
 
-    @RequestMapping(value={"/updateTask/{uid}"}, method = RequestMethod.POST)
-    public String updateTask(@ModelAttribute TaskVO upTask, @PathVariable Long uid){
-        ListEntity list = listRepository.findById(upTask.getParentUid()).get();
+    @RequestMapping(value="/updateTask/{uid}", method = RequestMethod.POST)
+    public String updateTask(@ModelAttribute TaskVO addTask, @PathVariable Long uid, Model model){
+        ListEntity list = listRepository.findById(addTask.getParentUid()).get();
         Task task = taskRepository.findById(uid).get();
-        if(StringUtils.hasText(upTask.getTitle()))
-            task.setTitle(upTask.getTitle());
-        if (StringUtils.hasText(upTask.getDescription()))
-            task.setDescription(upTask.getDescription());
-        if (!StringUtils.isEmpty(upTask.getDate()))
-            task.setDate(upTask.getDate());
+        if(StringUtils.hasText(addTask.getTitle()))
+            task.setTitle(addTask.getTitle());
+        if(StringUtils.hasText(addTask.getDescription())) {
+            task.setDescription(addTask.getDescription());
+        }
+        Date date = new Date();
+        date = addTask.getDate();
+        task.setDate(date);
+
         taskRepository.save(task);
 
-        return "redirect:/index/" + upTask.getParentUid();
+        return "redirect:/index/" + addTask.getParentUid();
     }
+
 
 
 }

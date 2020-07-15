@@ -35,6 +35,9 @@ public class ListController {
         //Iterable<List> lists = listRepository.findAll();
         model.addAttribute("lists", lists.values());
         model.addAttribute("currentList", lists.get(0L));
+
+        model.addAttribute("currentTask", lists.get(0L));
+
         return "index";
     }
 
@@ -48,6 +51,23 @@ public class ListController {
         model.addAttribute("lists", lists.values());
         model.addAttribute("currentList", lists.get(uid));
         model.addAttribute("tasks", tasks.values());
+        model.addAttribute("currentTask", lists.get(0L));
+        return "index";
+    }
+
+    @RequestMapping(value = {"/index/task/{uid}"}, method = RequestMethod.GET)
+    public String getIndexTask(Model model, @PathVariable Long uid){
+        Task curTask = taskRepository.findById(uid).get();
+        ListEntity curList = curTask.getListEntity();
+        Map<Long, ListEntity> lists = getLists();
+        Map<Long, Task> tasks = getTasks(curList.getUid());
+        //Optional<List> list = listRepository.findById(id);
+        //Iterable<Task> tasks = list.getTask();
+
+        model.addAttribute("lists", lists.values());
+        model.addAttribute("currentList", lists.get(curList.getUid()));
+        model.addAttribute("tasks", tasks.values());
+        model.addAttribute("currentTask", tasks.get(uid));
         return "index";
     }
 
